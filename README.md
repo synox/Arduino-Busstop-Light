@@ -1,8 +1,8 @@
 Arduino Script and Webservice to decide if the time is right for catching the next bus.
 
-Author : Bastian Widmer (bastianwidmer.ch)
+Fork for [spark.io](http://spark.io)
 
-Inspired and Adapted from Christian Leu (leumund.ch)
+Inspired and Adapted from Bastian Widmer (bastianwidmer.ch), Christian Leu (leumund.ch)
 
 Introduction
 ============
@@ -15,9 +15,7 @@ The Webservice makes use of the [PHP Simple HTML DOM Parser](http://simplehtmldo
 
 Needed Material
 ===============
-* Arduino Board
-* Arduino Ethernet Shield
-* Red and Green Leds or a Led Matrix (if you want to go fancy)
+* Spark Core Board (has LED onboard)
 
 Licence
 =======
