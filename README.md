@@ -1,21 +1,22 @@
-Arduino Script and Webservice to decide if the time is right for catching the next bus.
+[Spark Core Firmware](http://spark.io) and Webservice to decide if the time is right for catching the next bus.
 
-Fork for [spark.io](http://spark.io)
+Using the services of http://transport.opendata.ch/
 
 Inspired and Adapted from Bastian Widmer (bastianwidmer.ch), Christian Leu (leumund.ch)
 
 Introduction
 ============
 This script consists of two parts. A PHP-Webservice which gets the
-timetable data for the public transport from fahrplan.search.ch and
-a Arduino sketch which connects to the service and signals back to the
+timetable data for the public transport from http://transport.opendata.ch and
+a Firmware which connects to the service and signals back to the
 user if he can catch the next bus or not ;-)
 
-The Webservice makes use of the [PHP Simple HTML DOM Parser](http://simplehtmldom.sourceforge.net/).
 
 Needed Material
 ===============
 * Spark Core Board (has LED onboard)
+* Webhost with PHP enabled
+
 
 Additional Resources
 ======================
@@ -25,18 +26,10 @@ Additional Resources
 
 Licence
 =======
+Spark Core Bus Stop Light by Synox
 
-  DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-                    Version 2, December 2004
+To the extent possible under law, the person who associated CC0 with
+"Spark Core Bus Stop Light" has waived all copyright and related or neighboring rights
+to "Spark Core Bus Stop Light"
 
- Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
-
- Everyone is permitted to copy and distribute verbatim or modified
- copies of this license document, and changing it is allowed as long
- as the name is changed.
-
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-
-  0. You just DO WHAT THE FUCK YOU WANT TO.
-
+See http://creativecommons.org/publicdomain/zero/1.0/ for a copy of the CC0 legalcode.  
