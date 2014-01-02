@@ -1,6 +1,6 @@
 // configure the server and request
-char server[] = "example.com";
-char request[] = "GET /ampel/?from=Bern&to=Bern,Inselspital HTTP/1.0";
+char server[] = "www.yourserver.com";
+char request[] = "GET /webservice.php?from=Bern&to=Bern,Inselspital HTTP/1.0";
 #define DEBUG false
 
 /* Function prototypes -------------------------------------------------------*/
