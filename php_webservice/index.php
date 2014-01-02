@@ -42,6 +42,7 @@ foreach ($html->find('span.oev_printbold') as $e) {//Get the First DIV with Star
     $nextbus = strtotime($time); // Strip unneccesary data and convert to a timestamp
     $now = time(); 
     $diff = $nextbus - $now; // calculate the difference for the events
+    echo "(--)";
     if ($diff < $walkingtime) {
         if ($diff < -60) {
         	// if we get a negative value of time (can happen if the server time is not 100% accurate) skip this result and wait for the next bus
