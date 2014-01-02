@@ -26,8 +26,6 @@ Additional Resources
 
 Licence
 =======
-Spark Core Bus Stop Light by Synox
-
 To the extent possible under law, the person who associated CC0 with
 "Spark Core Bus Stop Light" has waived all copyright and related or neighboring rights
 to "Spark Core Bus Stop Light"
