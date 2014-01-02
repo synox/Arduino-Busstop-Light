@@ -35,13 +35,13 @@ foreach($connections as $con) {
 
   $diff = $nextbus - $now; // calculate the difference for the events
     
-    if ($diff < 90) {
+    if ($diff < 2*60) {
     	// too late
     	$colors["red"] = true;
     } else if ($diff < 3 * 60 ) {
     	// hurry
     	$colors["orange"] = true;
-    } else if ($diff < 5 * 60 ) {
+    } else if ($diff < 7 * 60 ) {
     	// now it is good
     	$colors["green"] = true;
     } else {

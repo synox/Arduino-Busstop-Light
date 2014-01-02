@@ -1,6 +1,8 @@
 // configure the server and request
 char server[] = "www.yourserver.com";
 char request[] = "GET /webservice.php?from=Bern&to=Bern,Inselspital HTTP/1.0";
+// HTTP Version 1.0 is used to avoid chunked transfer encoding
+
 #define DEBUG false
 
 /* Function prototypes -------------------------------------------------------*/
@@ -70,6 +72,9 @@ void loop() {
 
 void evalResponse(String& response) {
     if(DEBUG)  Serial.println("parsing response");
+
+    // this (--) should make the token unique, so it does not match anything in the
+    // http response header
 
     if ( response.indexOf("(--)off")!=-1) {
         Serial.println("OFF");
