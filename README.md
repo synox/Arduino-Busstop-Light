@@ -17,6 +17,12 @@ Needed Material
 ===============
 * Spark Core Board (has LED onboard)
 
+Additional Resources
+======================
+http://leumund.ch/d-i-y-busstop-lamp-arduino-0011112
+https://github.com/dasrecht/Arduino-Busstop-Light
+
+
 Licence
 =======
 
