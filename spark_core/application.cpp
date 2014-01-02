@@ -7,13 +7,14 @@ void evalResponse(String& response);
 
 // Configure the interval and brightness
 #define CHECK_INTERVAL_MILLIS 30000
-#define LED_MAX_VALUE 150 // dim the lights
+#define LED_MAX_VALUE 255 // dim the lights
 
 // configure the server and request
 char server[] = "example.ch";
 char request[] = "GET /ampel/?from=Bern&to=Bern,Inselspital HTTP/1.1";
 
-#define DEBUG 0
+
+#define DEBUG false
 TCPClient client;
 
 /* This function is called once at start up ----------------------------------*/
@@ -57,7 +58,7 @@ void loop() {
     delay(1000);        
 
     if(DEBUG) Serial.println("reading response....");
-    for(int i =0; i < sizeof(buffer) && client.available(); i++) {
+    for(unsigned int i =0; i < sizeof(buffer) && client.available(); i++) {
         char c = client.read();
         if(c == -1) {
             break;
@@ -86,8 +87,8 @@ void evalResponse(String& response) {
         RGB.color(LED_MAX_VALUE, 0, 0);
     } else if ( response.indexOf("(--)orange")!=-1) {
         Serial.println("ORANGE");
-        RGB.color(LED_MAX_VALUE, LED_MAX_VALUE/2, 0);
-    }else if ( response.indexOf("(--)green")!= -1) {
+        RGB.color(LED_MAX_VALUE, 100, 0);
+    } else if ( response.indexOf("(--)green")!= -1) {
         Serial.println("GREEN");
         RGB.color(0, LED_MAX_VALUE, 0);
     } else {
