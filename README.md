@@ -19,8 +19,8 @@ Needed Material
 
 Additional Resources
 ======================
-http://leumund.ch/d-i-y-busstop-lamp-arduino-0011112
-https://github.com/dasrecht/Arduino-Busstop-Light
+* http://leumund.ch/d-i-y-busstop-lamp-arduino-0011112
+* https://github.com/dasrecht/Arduino-Busstop-Light
 
 
 Licence
