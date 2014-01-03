@@ -41,16 +41,21 @@ foreach($connections as $con) {
     } else if ($diff < 3 * 60 ) {
     	// hurry
     	$colors["orange"] = true;
+    } else if ($diff < 4 * 60 ) {
+    	// good, go quick
+    	$colors["green_fast"] = true;
     } else if ($diff < 7 * 60 ) {
-    	// now it is good
-    	$colors["green"] = true;
+    	// good, go slow
+    	$colors["green_slow"] = true;
     } else {
     	// longer, then turn led off
     } 
 }
 
-if(array_key_exists("green",$colors) ) {
-	echo "(--)green\n";
+if(array_key_exists("green_fast",$colors) ) {
+	echo "(--)green_fast\n";
+} else if(array_key_exists("green_slow",$colors) ) {
+	echo "(--)green_slow\n";
 } else if(array_key_exists("orange",$colors) ) {
 	echo "(--)orange\n";
 } else if(array_key_exists("red",$colors) ) {

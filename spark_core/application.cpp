@@ -7,6 +7,7 @@ char request[] = "GET /webservice.php?from=Bern&to=Bern,Inselspital HTTP/1.0";
 
 /* Function prototypes -------------------------------------------------------*/
 void evalResponse(String& response);
+void animateGreen();
 
 // Configure the interval and brightness
 #define CHECK_INTERVAL_MILLIS 30000
@@ -25,8 +26,36 @@ void setup() {
 char buffer [400];            // string to hold http response
 unsigned int nextTime = 0;    // next time to contact the server
 
+
+
+/* Color led animation --------------------------------------------*/
+unsigned int red = 0;
+unsigned int green = 0;
+unsigned int blue = 0;
+
+unsigned int incr_red = 0;
+unsigned int incr_green = 0;
+unsigned int incr_blue = 0;
+
+void setColor(int r, int g, int b) {
+    red = r;
+    green = g;
+    blue = b;
+}
+
+/** defines how much and in which direction the color changes per loop */
+void setAnimation(int r, int g, int b) {
+    incr_red = r;
+    incr_green = g;
+    incr_blue = b;
+}
+
+
 /* This function loops forever --------------------------------------------*/
 void loop() {
+    animateColors();
+    RGB.color(red,green,blue);
+
     if ( nextTime > millis() ) {
         return;
     }
@@ -78,18 +107,68 @@ void evalResponse(String& response) {
 
     if ( response.indexOf("(--)off")!=-1) {
         Serial.println("OFF");
-        RGB.color(0, 0, 0);
+        setColor(0, 0, 0);
+        setAnimation(0, 0, 0);
     } else if ( response.indexOf("(--)red") != -1) {
         Serial.println("RED");
-        RGB.color(LED_MAX_VALUE, 0, 0);
+        setColor(LED_MAX_VALUE, 0, 0);
+        setAnimation(0, 0, 0);
     } else if ( response.indexOf("(--)orange")!=-1) {
         Serial.println("ORANGE");
-        RGB.color(LED_MAX_VALUE, 100, 0);
-    } else if ( response.indexOf("(--)green")!= -1) {
-        Serial.println("GREEN");
-        RGB.color(0, LED_MAX_VALUE, 0);
+        setColor(LED_MAX_VALUE, 50, 0);
+        setAnimation(0, 0, 0);
+    } else if ( response.indexOf("(--)green_slow")!= -1) {
+        Serial.println("GREEN slow");
+        setColor(0, LED_MAX_VALUE, 0);
+        setAnimation(0, 0, 0);
+    }else if ( response.indexOf("(--)green_fast")!= -1) {
+        Serial.println("GREEN fast");
+        setColor(0, LED_MAX_VALUE, 0);
+        setAnimation(0, 4, 0);
     } else {
         Serial.println("unknown command: " + response);
-        RGB.color(0, 0, LED_MAX_VALUE);
+        setColor(0, 0, LED_MAX_VALUE);
+        setAnimation(0, 0, 0);
     }
+}
+
+
+
+void animateColors() {
+    green += incr_green;
+    red += incr_red;
+    blue += incr_blue;
+
+    if ( incr_red != 0) {
+        // swap direction on max/min values
+        if(red > 250) {
+            incr_red = -incr_red;
+            red = 250;
+        } else if (red < 50) {
+            incr_red = -incr_red;
+            red = 50;
+        }
+    }
+
+    if ( incr_green != 0) {
+        // swap direction on max/min values
+        if(green > 250) {
+            incr_green = -incr_green;
+            green = 250;
+        } else if (green < 50) {
+            incr_green = -incr_green;
+            green = 50;
+        }
+    }
+
+    if ( incr_blue != 0) {
+            // swap direction on max/min values
+            if(blue > 250) {
+                incr_blue = -incr_blue;
+                blue = 250;
+            } else if (blue < 50) {
+                incr_blue = -incr_blue;
+                blue = 50;
+            }
+        }
 }
