@@ -107,7 +107,7 @@ void evalResponse(String& response) {
 
     if ( response.indexOf("(--)off")!=-1) {
         Serial.println("OFF");
-        setColor(0, 0, 0);
+        setColor(0, 0, 10);
         setAnimation(0, 0, 0);
     } else if ( response.indexOf("(--)red") != -1) {
         Serial.println("RED");
@@ -124,7 +124,7 @@ void evalResponse(String& response) {
     }else if ( response.indexOf("(--)green_fast")!= -1) {
         Serial.println("GREEN fast");
         setColor(0, LED_MAX_VALUE, 0);
-        setAnimation(0, 4, 0);
+        setAnimation(0, 2, 0);
     } else {
         Serial.println("unknown command: " + response);
         setColor(0, 0, LED_MAX_VALUE);
