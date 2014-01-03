@@ -1,34 +1,36 @@
-A small LED that shows when it is the right time to leave and catch a bus. 
+A small Colored LED that shows when it is the right time to leave and catch a bus. (Green=Good to go, Orange=run!, Red=too late)
 
-![Example installation](images/example.jpg)
+![Example installation](images/example.jpg)  
+_Example installation made out of paper._
 
-It is realized with a [Spark Core Firmware](http://spark.io) and a PHP Webservice. The data source is http://transport.opendata.ch/
+**Data**: The data source is http://transport.opendata.ch/. A php script is used for parsing the data and passing to the device.. 
 
-The project was inspired by Bastian Widmer (bastianwidmer.ch) and Christian Leu (leumund.ch)
-
-Introduction
-============
-This script consists of two parts. A PHP-Webservice which gets the
-timetable data for the public transport from http://transport.opendata.ch and
-a Firmware which connects to the service and signals back to the
-user if he can catch the next bus or not ;-)
+**Device**: It is realized with a [Spark Core Firmware](http://spark.io). It calls the php script over HTTP and parses the result. 
 
 
 Needed Material
-===============
+----------------
 * Spark Core Board (has LED onboard)
 * Webhost with PHP enabled
 * WiFi Connection
 
 
+Installation 
+----------------
+1. Upload php script to a webshost, adjust thresholds to your needs. 
+2. Configure the values and url in the Spark Core firmware
+3. [Connect the Spark Core](https://www.spark.io/start) to your wifi
+3. Deploy the firmware using the [Spark Cloud](https://www.spark.io/build).
+
 Additional Resources
-======================
+----------------
+* Thanks: The project was inspired by Bastian Widmer (bastianwidmer.ch) and Christian Leu (leumund.ch)
 * http://leumund.ch/d-i-y-busstop-lamp-arduino-0011112
 * https://github.com/dasrecht/Arduino-Busstop-Light
 
 
 Licence
-=======
+----------------
       To the extent possible under law, the person who associated CC0 with
       "Spark Core Bus Stop Light" has waived all copyright and related or neighboring rights
       to "Spark Core Bus Stop Light"
