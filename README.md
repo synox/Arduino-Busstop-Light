@@ -1,8 +1,10 @@
-[Spark Core Firmware](http://spark.io) and Webservice to decide if the time is right for catching the next bus.
+A small LED that shows when it is the right time to leave and catch a bus. 
 
-Using the services of http://transport.opendata.ch/
+![Example installation](images/example.jpg)
 
-Inspired and Adapted from Bastian Widmer (bastianwidmer.ch), Christian Leu (leumund.ch)
+It is realized with a [Spark Core Firmware](http://spark.io) and a PHP Webservice. The data source is http://transport.opendata.ch/
+
+The project was inspired by Bastian Widmer (bastianwidmer.ch) and Christian Leu (leumund.ch)
 
 Introduction
 ============
@@ -16,6 +18,7 @@ Needed Material
 ===============
 * Spark Core Board (has LED onboard)
 * Webhost with PHP enabled
+* WiFi Connection
 
 
 Additional Resources
