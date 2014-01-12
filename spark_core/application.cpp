@@ -70,6 +70,16 @@ void setup() {
 	RGB.color(0,0,10);   // dimmed blue
 }
 
+
+void printCache(unsigned long* cache) {
+	Serial.println("conn:");
+	Serial.println("-----------");
+
+	for (int i = 0; i < CONNECTION_CACHE_SIZE; i++) {
+			Serial.println(cache[i]);
+	}
+	Serial.println("-------");
+}
 /**
  * Adds the given timestamp to the connection array. Multiple arrays might be possible.
  */
@@ -115,23 +125,26 @@ int getCacheSize(unsigned long* cache) {
 	return count;
 }
 
-void parseFahrplan(String resp, unsigned long* cache) {
-	int index = 0;
-	if(DEBUG) Serial.println("parsing response");
-
-	int i = 0;
+void parseFahrplan(String jsonData, unsigned long* cache) {
+	int offset = 0;
 	do {
-		i = resp.indexOf("departure\":\"", i);
-		if (i == -1) {
+		offset = jsonData.indexOf("departure\":\"", offset);
+		if(DEBUG) Serial.print("offset: ");
+		if(DEBUG) Serial.println(offset);
+
+		if (offset == -1) {
 			break;
 		}
-		i += 12;
-		String str = resp.substring(i, i + 24);
+		offset += 12; // move to timestamp
+		String str = jsonData.substring(offset, offset + 24);
+		if(DEBUG) Serial.print("date: ");
+		if(DEBUG) Serial.println(str);
+		if(str.length() == 0) {
+			continue;
+		}
 		long ts = parseDateWithTimezone(str);
-
 		addConnection(ts, cache);
-		index++;
-	} while (i >= 0);
+	} while (offset >= 0);
 }
 
 
@@ -190,14 +203,17 @@ void loop() {
 	Serial.print("now: ");
 	Serial.println(now);
 
+
 	// organize connection cache
 	cleanupCache(connections, now);
 	if ( getCacheSize(connections) <=2 )  {
-		if(DEBUG) Serial.print("loading connections...");
+		if(DEBUG) Serial.println("loading connections...");
 		// refresh connections
 		String resp = http_get("transport.opendata.ch", query);
 		parseFahrplan(resp, connections);
 	}
+
+	if(DEBUG)printCache(connections);
 
 	Status status  = calculateStatus(connections, now);
 	updateLED(status);
@@ -281,6 +297,10 @@ long parseDateWithTimezone(String str) {
 	long ts = parseDate(str);
 	long offset = parseTzOffset(str);
 	ts -= offset;
+	if(DEBUG) Serial.print("convert ");
+	if(DEBUG) Serial.print(str);
+	if(DEBUG) Serial.print(" to ");
+	if(DEBUG) Serial.println(ts);
 	return ts;
 }
 
