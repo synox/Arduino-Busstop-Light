@@ -3,7 +3,8 @@
 // ------------- configuration ------------
 
 // set the parametrs from= and to= (keep the fields[] as it is).
- const char* query = "/v1/connections?from=Bern&to=Bern,Hirschengraben&fields[]=connections/from/departure&limit=6";
+const char* query = "/v1/connections?from=Bern&to=Bern,Hirschengraben&fields[]=connections/from/departure&limit=6";
+
 
 const char* connName1 = "9  >Bern";
 
@@ -47,7 +48,7 @@ void updateLED(Status status) {
 // ------------- enf of configuration ------------
 
 #include <time.h>
-#define DEBUG true
+#define DEBUG false
 
 String http_get(const char* hostname, String path);
 long currentTimeEpoche();
@@ -187,7 +188,7 @@ void updateDisplay(const char* connectionName, unsigned long* cache, unsigned lo
 		if(diff < 0) {
 			continue;
 		} else {
-			String time(diff);
+			String time(diff / 60); // minutes
 			if(line == 1){
 				time1 = time;
 				line++;
