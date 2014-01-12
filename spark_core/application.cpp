@@ -3,7 +3,7 @@
 // ------------- configuration ------------
 
 // set the parametrs from= and to= (keep the fields[] as it is).
-const char* query = "/v1/connections?from=Bern&to=Genf&fields[]=connections/from/departure&limit=6";
+const char* query = "/v1/connections?from=Bern&to=Bern,Hirschengraben&fields[]=connections/from/departure&limit=6";
 
 // possible status list:
 enum Status {
@@ -13,7 +13,6 @@ enum Status {
 
 Status getStatus(int diffSeconds) {
 	if (diffSeconds < -60) {
-		Serial.println("off");
 		// too late
 		return off;
 	} else if (diffSeconds < 2 * 60) {
@@ -30,16 +29,16 @@ Status getStatus(int diffSeconds) {
 	}
 }
 
-void updateLED(Status& status) {
+void updateLED(Status status) {
 	Serial.print("new status:");
 	Serial.println(status);
 
 	switch(status) {
 		case off:      RGB.color(0,0,10); break;   // dimmed blue
 		case missed:   RGB.color(255,0,0); break;  // red
-		case run:      RGB.color(255,255,0); break;// orange
-		case leave_now:RGB.color(255,250,0); break;// orange
-		case walk:     RGB.color(0,255,50); break; // green
+		case run:      RGB.color(255,50,0); break;// orange
+		case leave_now:RGB.color(255,255,0); break;// yellow
+		case walk:     RGB.color(0,255,0); break; // green
 	}
 }
 
@@ -47,11 +46,11 @@ void updateLED(Status& status) {
 // ------------- enf of configuration ------------
 
 #include <time.h>
-#define DEBUG false
+#define DEBUG true
 
 String http_get(const char* hostname, String path);
 long currentTimeEpoche();
-long parseDate(String str);
+long parseDateWithTimezone(String str);
 
 int led = D7;
 Status currentStatus = off;
@@ -78,6 +77,9 @@ void setup() {
  * Adds the given timestamp to the connection array. Multiple arrays might be possible.
  */
 void addConnection(unsigned long ts, unsigned long* cache) {
+	if(DEBUG) Serial.print("fahrplan ts:");
+	if(DEBUG) Serial.println(ts);
+
 	for (int i = 0; i < CONNECTION_CACHE_SIZE; i++) {
 
 		if (cache[i] == ts) {
@@ -93,27 +95,27 @@ void addConnection(unsigned long ts, unsigned long* cache) {
 
 void cleanupCache(unsigned long* cache, unsigned long now) {
 	for (int i = 0; i < CONNECTION_CACHE_SIZE; i++) {
-		if(cache[i]  < now - 120) {
+		if(cache[i] == 0) {
+			// empty
+		} else if(cache[i]  < now - 120) {
 			// delete old entries
 			cache[i] = 0;
 		}
-		if(i > 0 && cache[i-1] != 0) {
-			// move current entry to prev
+		if(i > 0 && cache[i-1] == 0) {
+			// if prev entry is empty: move current
 			cache[i-1] = cache[i];
 			cache[i] = 0;
 		}
 	}
 }
 int getCacheSize(unsigned long* cache) {
-	int i = 0;
+	int count = 0;
 	for (int i = 0; i < CONNECTION_CACHE_SIZE; i++) {
 		if(cache[i] != 0) {
-			i++;
+			count++;
 		}
 	}
-	Serial.print("connection count: ");
-	Serial.println(i);
-	return i;
+	return count;
 }
 
 void parseFahrplan(String resp, unsigned long* cache) {
@@ -128,9 +130,8 @@ void parseFahrplan(String resp, unsigned long* cache) {
 		}
 		i += 12;
 		String str = resp.substring(i, i + 24);
-		if(DEBUG) Serial.print("fahrplan ts:");
-		if(DEBUG) Serial.println(str);
-		long ts = parseDate(str);
+		long ts = parseDateWithTimezone(str);
+
 		addConnection(ts, cache);
 		index++;
 	} while (i >= 0);
@@ -170,6 +171,7 @@ void loop() {
 		return;
 	}
 
+
 	digitalWrite(led, HIGH);
 	delay(300);
 	digitalWrite(led, LOW);
@@ -177,6 +179,7 @@ void loop() {
 	digitalWrite(led, HIGH);
 	delay(300);
 	digitalWrite(led, LOW);
+
 
 	// the timestamp is checked online every 5 min
 	if(lastTimestamp == 0 || lastTsMilis == 0 || millis() - lastTsMilis > 5 * 60 * 1000 ) {
@@ -187,7 +190,7 @@ void loop() {
 		lastTimestamp = currentTimeEpoche();
 		lastTsMilis = millis();
 	}
-	if(DEBUG) 	Serial.print("lastTimestamp: ");
+	if(DEBUG) Serial.print("lastTimestamp: ");
 	if(DEBUG) Serial.println(lastTimestamp);
 
 	// estimate current time (last ts + difference)
@@ -198,6 +201,7 @@ void loop() {
 	// organize connection cache
 	cleanupCache(connections, now);
 	if ( getCacheSize(connections) <=2 )  {
+		if(DEBUG) Serial.print("loading connections...");
 		// refresh connections
 		String resp = http_get("transport.opendata.ch", query);
 		parseFahrplan(resp, connections);
@@ -206,8 +210,8 @@ void loop() {
 	Status status  = calculateStatus(connections, now);
 	updateLED(status);
 
-	// check the color again in 10 seconds:
-	nextTime = millis() + 10000;
+	// check the color again in 5 seconds:
+	nextTime = millis() + 5000;
 }
 
 // ------------- HTTP functions --------------
@@ -266,6 +270,7 @@ long parseDate(String str) {
 	return (long) mktime(&time);
 }
 
+
 /**
  * can parse the timezone offset in the string "2014-01-11T17:17:59+0100"
  */
@@ -275,6 +280,17 @@ long parseTzOffset(String str) {
 	int offsetHours;
 	sscanf(str.c_str(), "%*19s%3d", &offsetHours);
 	return offsetHours * 3600;
+}
+
+
+/**
+ * parse a string of the form "2014-01-11T17:17:59+0200" and fixes the timezone offset
+ */
+long parseDateWithTimezone(String str) {
+	long ts = parseDate(str);
+	long offset = parseTzOffset(str);
+	ts -= offset;
+	return ts;
 }
 
 /**
