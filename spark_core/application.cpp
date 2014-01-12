@@ -30,9 +30,6 @@ Status getStatus(int diffSeconds) {
 }
 
 void updateLED(Status status) {
-	Serial.print("new status:");
-	Serial.println(status);
-
 	switch(status) {
 		case off:      RGB.color(0,0,10); break;   // dimmed blue
 		case missed:   RGB.color(255,0,0); break;  // red
@@ -272,8 +269,7 @@ long parseDate(String str) {
 long parseTzOffset(String str) {
 	// strptime currently does not parse the timezone with %z, so we do it ourself:
 	// parse 3 digits the "+0100" which result in 1 hour.
-	int offsetHours;
-	sscanf(str.c_str(), "%*19s%3d", &offsetHours);
+	int offsetHours = atoi(str.substring(19,22).c_str());
 	return offsetHours * 3600;
 }
 
