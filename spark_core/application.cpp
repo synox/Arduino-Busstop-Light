@@ -3,7 +3,9 @@
 // ------------- configuration ------------
 
 // set the parametrs from= and to= (keep the fields[] as it is).
-const char* query = "/v1/connections?from=Bern&to=Bern,Hirschengraben&fields[]=connections/from/departure&limit=6";
+ const char* query = "/v1/connections?from=Bern&to=Bern,Hirschengraben&fields[]=connections/from/departure&limit=6";
+
+const char* connName1 = "9  >Bern";
 
 // possible status list:
 enum Status {
@@ -39,6 +41,8 @@ void updateLED(Status status) {
 	}
 }
 
+// is a display connected?
+#define DISPLAY true
 
 // ------------- enf of configuration ------------
 
@@ -171,6 +175,53 @@ Status calculateStatus(unsigned long* cache, long now) {
 	return bestStatus;
 }
 
+void updateDisplay(const char* connectionName, unsigned long* cache, unsigned long now) {
+	if(DEBUG) Serial.println("updating display...");
+
+	// assuming it is a 16 column, 2 row display
+	String time1;
+	String time2;
+	int line = 1;
+	for (int i = 0; i < CONNECTION_CACHE_SIZE; i++) {
+		long diff = cache[i] - now;
+		if(diff < 0) {
+			continue;
+		} else {
+			String time(diff);
+			if(line == 1){
+				time1 = time;
+				line++;
+				continue;
+			} else {
+				time2 = time;
+				break;
+			}
+		}
+	}
+
+	// Line 1
+	String line1 (connectionName);
+	unsigned int spacing1 = 16 - line1.length() - time1.length();
+	for(unsigned int i=0; i < spacing1; i++) {
+		line1 += " "; // fill with spaces
+	}
+	line1 += time1;
+
+	// Line 2
+	String line2 (connectionName);
+	unsigned int spacing2 = 16 - line2.length() - time2.length();
+	for(unsigned int j=0; j < spacing2; j++) {
+		line2 += " "; // fill with spaces
+	}
+	line2 += time2;
+
+	// print lines to display or serial
+	// TODO: use Serial connection to display when ready
+	Serial.println(line1);
+	Serial.println(line2);
+}
+
+
 
 unsigned long lastTimestamp =0;
 long lastTsMilis  = 0;
@@ -212,6 +263,8 @@ void loop() {
 
 	Status status  = calculateStatus(connections, now);
 	updateLED(status);
+
+	if(DISPLAY) updateDisplay(connName1, connections,now);
 
 	// check the color again in 5 seconds:
 	nextTime = millis() + 5000;
