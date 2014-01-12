@@ -15,13 +15,13 @@ Status getStatus(int diffSeconds) {
 	if (diffSeconds < -60) {
 		// too late
 		return off;
-	} else if (diffSeconds < 2 * 60) {
+	} else if (diffSeconds < 90) {
 		return missed;
-	} else if (diffSeconds < 4 * 60) {
+	} else if (diffSeconds < 3 * 60) {
 		return run;
-	} else if (diffSeconds < 5 * 60) {
+	} else if (diffSeconds < 3.5 * 60 ) {
 		return leave_now;
-	} else if (diffSeconds < 8 * 60) {
+	} else if (diffSeconds < 7 * 60) {
 		return walk;
 	} else {
 		// longer, then turn led off
@@ -34,7 +34,7 @@ void updateLED(Status status) {
 		case off:      RGB.color(0,0,10); break;   // dimmed blue
 		case missed:   RGB.color(255,0,0); break;  // red
 		case run:      RGB.color(255,50,0); break;// orange
-		case leave_now:RGB.color(255,255,0); break;// yellow
+		case leave_now:RGB.color(255,150,0); break;// yellow
 		case walk:     RGB.color(0,255,0); break; // green
 	}
 }
@@ -188,26 +188,21 @@ void loop() {
 
 	// the timestamp is checked online every 5 min
 	if(lastTimestamp == 0 || lastTsMilis == 0 || millis() - lastTsMilis > 5 * 60 * 1000 ) {
-		Serial.print("local time is old, refresh. diff:");
-		Serial.println(millis() - lastTsMilis);
-
+		Serial.println("local time is old, refreshing");
 		// refresh time online
 		lastTimestamp = currentTimeEpoche();
 		lastTsMilis = millis();
 	}
-	if(DEBUG) Serial.print("lastTimestamp: ");
-	if(DEBUG) Serial.println(lastTimestamp);
-
 	// estimate current time (last ts + difference)
 	unsigned long now = lastTimestamp + ((millis() - lastTsMilis) / 1000);
-	Serial.print("now: ");
-	Serial.println(now);
+	if(DEBUG) Serial.print("now: ");
+	if(DEBUG) Serial.println(now);
 
 
 	// organize connection cache
 	cleanupCache(connections, now);
-	if ( getCacheSize(connections) <=2 )  {
-		if(DEBUG) Serial.println("loading connections...");
+	if ( getCacheSize(connections) <=1 )  {
+		Serial.println("loading connections...");
 		// refresh connections
 		String resp = http_get("transport.opendata.ch", query);
 		parseFahrplan(resp, connections);
