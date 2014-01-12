@@ -11,15 +11,13 @@ _Example installation made out of paper._
 Needed Material
 ----------------
 * Spark Core Board (has LED onboard)
-* Webhost with PHP enabled
 * WiFi Connection
 
 
 Installation 
 ----------------
-1. Upload php script to a webshost, adjust thresholds to your needs. 
-2. Configure the values and url in the Spark Core firmware
-3. [Connect the Spark Core](https://www.spark.io/start) to your wifi
+1. Configure the values and url in the Spark Core firmware
+2. [Connect the Spark Core](https://www.spark.io/start) to your wifi
 3. Deploy the firmware using the [Spark Cloud](https://www.spark.io/build).
 
 Additional Resources
