@@ -171,13 +171,8 @@ void loop() {
 		return;
 	}
 
-
 	digitalWrite(led, HIGH);
-	delay(300);
-	digitalWrite(led, LOW);
-	delay(300);
-	digitalWrite(led, HIGH);
-	delay(300);
+	delay(200);
 	digitalWrite(led, LOW);
 
 
