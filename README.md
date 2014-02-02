@@ -1,7 +1,13 @@
 A small Colored LED that shows when it is the right time to leave and catch a bus. (Green=Good to go, Orange=Run!, Red=too late)
 
+![Example installation](images/display.jpg)  
+_Example with display._
+
 ![Example installation](images/example.jpg)  
 _Example installation made out of paper._
+
+
+
 
 **Data**: The data source is http://transport.opendata.ch/. A php script is used for parsing the data and passing to the device.. 
 
